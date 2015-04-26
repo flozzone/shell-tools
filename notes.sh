@@ -2,9 +2,9 @@
 
 doc_root="~/notes"
 extension="txt"
-cmd_edit="/usr/bin/vim"
-cmd_view="/bin/cat"
-cmd_new="/usr/bin/vim"
+cmd_edit="/usr/bin/vim \$path"
+cmd_view="/bin/cat \$path"
+cmd_new="/usr/bin/vim \$path"
 header_separator="="
 
 
@@ -25,25 +25,27 @@ do_view() {
   path=$1
   rel_path=${path:${#doc_root_abs}+1}
   info="${prefix}${rel_path}"
+
+  # construct the separator line
   sep=$(eval "for i in {1..${#info}} ; do echo -n \"$header_separator\" ; done")
-  #echo $sep
+
   echo ""
   echo $info
   echo -e "$sep\n"
 
-  exec ${cmd_view} ${path}
+  eval ${cmd_view}
 }
 
 do_edit() {
   path=$1
 
-  exec ${cmd_edit} ${path}
+  eval ${cmd_edit}
 }
 
 do_new() {
   path=$1
 
-  exec ${cmd_new} ${path}
+  eval ${cmd_new}
 }
 
 
@@ -79,8 +81,13 @@ if [ -f "${exact_path}" ]; then
 else
   declare find_result=($(eval "find $doc_root_abs -printf \"%p\n\" | grep $doc"))
   
-  if [ ${#find_result[@]} -eq 1 ]; then
+  result_count=${#find_result[@]}
+
+  if [ $result_count -eq 1 ]; then
     path=${find_result[0]}
+  elif [ $result_count -eq 0 ]; then
+    echo "No documents matching '$doc' found."
+    exit 1
   else
     echo "Document name is ambigous. Documents found:" >&2
     echo ""
@@ -88,13 +95,8 @@ else
       echo "  $found"
     done
     echo ""
-    path=""
-  fi 
-fi
-
-if [ -z "${path}" ]; then
-    echo "Could not find any document with '${doc}'." >&2
     exit 1
+  fi 
 fi
 
 case $action in

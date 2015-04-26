@@ -4,7 +4,6 @@ doc_root="~/notes"
 extension="txt"
 cmd_edit="/usr/bin/vim \$path"
 cmd_view="/bin/cat \$path"
-cmd_new="/usr/bin/vim \$path"
 header_separator="="
 
 
@@ -19,6 +18,18 @@ usage() {
   echo "  -v        view" >&2
   echo "  -e        edit" >&2
   echo "  document  filename of file inside ~/notes" >&2
+}
+
+ask_yesno() {
+  text=$1
+
+  read -p "$text " -n 1 -r
+  echo    # (optional) move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # do dangerous stuff
+    return 0
+  fi
+  return 1
 }
 
 do_view() {
@@ -42,22 +53,14 @@ do_edit() {
   eval ${cmd_edit}
 }
 
-do_new() {
-  path=$1
-
-  eval ${cmd_new}
-}
-
-
 # check options
+action="view"
 while getopts ":ve" opt; do
   case $opt in
     v)
-      has_action=true
       action="view"
       ;;
     e)
-      has_action=true
       action="edit"
       ;;
     \?)
@@ -66,16 +69,13 @@ while getopts ":ve" opt; do
   esac
 done
 
-if ! $has_action ; then
-  usage
-  exit 1
-fi
-
+# get document name parameter
 doc=${@:$OPTIND:1}
 
 path=""
 exact_path="${doc_root_abs}/${doc}.${extension}"
 
+# check if the document exists
 if [ -f "${exact_path}" ]; then
   path=$exact_path
 else
@@ -87,7 +87,14 @@ else
     path=${find_result[0]}
   elif [ $result_count -eq 0 ]; then
     echo "No documents matching '$doc' found."
-    exit 1
+
+    if ask_yesno "Would you like to create $exact_path? (y/n)" ; then
+      touch $exact_path
+      path=$exact_path
+      action="edit"
+    else
+      exit 1
+    fi
   else
     echo "Document name is ambigous. Documents found:" >&2
     echo ""
@@ -105,9 +112,6 @@ case $action in
     ;;
   edit)
     do_edit "$path"
-    ;;
-  new)
-    do_new "$path"
     ;;
   *)
     echo "Error. Should not occur"

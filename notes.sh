@@ -1,7 +1,8 @@
 #!/bin/bash
 
+# constants
 doc_root="~/notes"
-extension="txt"
+doc_ext=""
 cmd_edit="/usr/bin/vim \$path"
 cmd_view="/bin/cat \$path"
 header_separator="="
@@ -73,7 +74,7 @@ done
 doc=${@:$OPTIND:1}
 
 path=""
-exact_path="${doc_root_abs}/${doc}.${extension}"
+exact_path="${doc_root_abs}/${doc}${doc_ext}"
 
 # check if the document exists
 if [ -f "${exact_path}" ]; then

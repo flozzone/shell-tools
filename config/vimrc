@@ -1,0 +1,88 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"                      GENERAL
+" 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+" Automatic wrapping at col 72 for *.txt files
+autocmd BufRead,BufNewFile *.txt set tw=72 | set fo=cqt | set wm=0
+
+" tabs with spaces can be deleted with one backspace
+set smarttab
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"                    KEY MAPPINGS
+" 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" save
+noremap <silent> <C-S> :update<CR>
+vnoremap <silent> <C-S>         <C-C>:update<CR>
+inoremap <silent> <C-S>         <C-O>:update<CR>
+" quit
+map <C-Q> :q<CR>
+" tabs
+map <C-T> :tabnew<CR>
+map <C-Up> :tabp<CR>
+map <C-Down> :tabn<CR>
+" ctags
+map <F12> :!ctags -R --sort=yes --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" tagbar
+nmap <F8> :TagbarToggle<CR> 
+
+" configure tags - add additional tags here or comment out not-used ones
+set tags=./.tags;~/
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"                     PACKAGE MANAGER
+" 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""
+" Vundle specific
+""""""""""""""""""
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+""""""""""""""""""
+"   packages
+""""""""""""""""""
+
+Plugin 'tpope/vim-fugitive'
+
+""""""""""""""""""
+" Vundle specific
+""""""""""""""""""
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just
+" :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to
+" auto-approve removal
+
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line

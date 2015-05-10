@@ -333,5 +333,6 @@ stty erase "^?"
 # own configurations
 
 PATH=$PATH:~/tools/shell
+source ~/tools/shell/config/shellrc
 
 ## END OF FILE #################################################################

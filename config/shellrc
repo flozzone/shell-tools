@@ -1,0 +1,8 @@
+#!/bin/bash
+
+alias gg='git gui'
+alias gk='gitk'
+alias gka='gitk --all'
+alias gf='git fetch $@'
+alias gfa='git fetch --all'
+alias gs='git status'
